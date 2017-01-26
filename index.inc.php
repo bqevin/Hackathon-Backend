@@ -31,7 +31,6 @@ if(isset($_POST['course'])){
 if(isset($_POST['question'])){
 	$quiz = R::dispense('questions');
 
-	$quiz->quiz_id = Input::get('id'); // Who paid the fee (Foreign Key)
 	$quiz->course_code = Input::get('course_code'); // For what course (Foreign Key)
 	$quiz->quiz = Input::get('question');
 	$quiz->ans_a = Input::get('ans_a');
@@ -40,7 +39,9 @@ if(isset($_POST['question'])){
 	$quiz->ans_d = Input::get('ans_d');
 	$quiz->ans_e = Input::get('ans_e');
 
-	R::store($quiz);
+	$id = R::store($quiz);
+
+	echo json_encode(R::load('questions', $id));
 }
 
 if(isset($_POST['user'])){

@@ -4,8 +4,10 @@ require_once 'include/Input.php';
 
 header('Content-type: application/json');
 
+//Configuring DB
 R::setup('mysql:host; dbname=hackteach','root','');
 
+//Checking if user has filled course
 if(isset($_POST['course'])){
 	$course = R::dispense('course');
 

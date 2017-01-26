@@ -46,7 +46,7 @@ if(isset($_POST['question'])){
 
 if(isset($_POST['user'])){
 	$user = R::dispense('users');
-
+	
 	$user->name = Input::get('name');
 	$user->email = Input::get('email');
 	$user->idnumber = Input::get('idnumber');
@@ -59,7 +59,10 @@ if(isset($_POST['user'])){
 	$user->third_attempt = Input::get('third_attempt');
 
 	R::store($user);
-}    
+}
+
+
+// Update user onformation    
 
 // Select user(s) from the database 
 if(isset($_GET['get_user'])){

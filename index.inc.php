@@ -1,51 +1,73 @@
 <?php
 require_once 'include/rb.php';
 require_once 'include/Input.php';
+require_once 'include/db.php';
 
 header('Content-type: application/json');
 
-R::setup('mysql:host; dbname=hackteach','root','');
+R::setup('mysql:host={$host}; dbname={$dbname}', '{$user}', '{$pass}');
 
+//Checking if user has filled course
 if(isset($_POST['course'])){
 	$course = R::dispense('course');
+	$coursecode = Input::get('course_code');
 
-	$course->course_code = Input::get('course_code');
-	$course->course_name = Input::get('course_name');
-	$course->course_description = Input::get('course_description');
-	$course->course_duration = Input::get('course_duration');
-	$course->total_cost = Input::get('total_cost');
-	$course->course_poster = Input::get('course_poster');
+	if(!$find  = R::findOne( 'course', ' course_code = ? ', [ $coursecode ] )){
 
-	R::store($course);
+		$course->course_code = $coursecode;
+		$course->course_name = Input::get('course_name');
+		$course->course_description = Input::get('course_description');
+		$course->course_duration = Input::get('course_duration');
+		$course->total_cost = Input::get('total_cost');
+		$course->course_poster = Input::get('course_poster');
+
+		$id = R::store($course);
+		$res = R::load('course', $id);
+	}
+	else{
+		$res = 'Error: Course already Exists!';
+	}
+	echo json_encode($res);
 }
 
-if(isset($_POST['payments'])){
-	$payment = R::dispense('payment');
+if(isset($_POST['question'])){
+	$quiz = R::dispense('questions');
 
-	$payment->idnumber = Input::get(); // Who paid the fee (Foreign Key)
-	$payment->course_code = Input::get(); // For what course (Foreign Key)
-	$payment->reg_fee = Input::get();
-	$payment->month_one = Input::get();
-	$payment->month_two = Input::get();
-	$payment->month_three = Input::get();
-	$payment->month_four = Input::get();
+	$quiz->course_code = Input::get('course_code'); // For what course (Foreign Key)
+	$quiz->quiz = Input::get('question');
+	$quiz->ans_a = Input::get('ans_a');
+	$quiz->ans_b = Input::get('ans_b');
+	$quiz->ans_c = Input::get('ans_c');
+	$quiz->ans_d = Input::get('ans_d');
+	$quiz->ans_e = Input::get('ans_e');
 
-	R::store($payment);
+	$id = R::store($quiz);
+
+	echo json_encode(R::load('questions', $id));
 }
 
 if(isset($_POST['user'])){
 	$user = R::dispense('users');
-
+	
 	$user->name = Input::get('name');
 	$user->email = Input::get('email');
 	$user->idnumber = Input::get('idnumber');
 	$user->phone = Input::get('phone');
+	$user->password = Input::get('password');
+	$user->hash = Input::get('hash');
+	$user->course_code = Input::get('course_code');
+	$user->first_attempt = Input::get('first_attempt');
+	$user->second_attempt = Input::get('second_attempt');
+	$user->third_attempt = Input::get('third_attempt');
 
 	R::store($user);
 }
 
+
+// Update user onformation    
+
 // Select user(s) from the database 
-if(isset($_GET[''])){
+if(isset($_GET['get_user'])){
 	if(isset($_GET['id'])){
 		$sql = "SELECT * FROM users WHERE id = {$id}";
 	}
@@ -56,3 +78,14 @@ if(isset($_GET[''])){
 	echo json_encode($results);
 }
 
+if(isset($_GET['questions'])){
+	$sql = "SELECT * FROM questions";
+	$res =  R::exec($sql);
+	$res = shuffle($res);
+
+	$results = array();
+	for ($i=0; $i < 10; $i++) { 
+		$arr = array_push($results, $variable);
+	}
+	echo json_encode($results);
+}

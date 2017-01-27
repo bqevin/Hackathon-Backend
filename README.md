@@ -7,3 +7,5 @@ Api request:
 -To query specific user details [GET] tusemezane.or.ke/sandbox/index.inc.php?get_user$id='the user id'
 -query questions tusemezane.or.ke/sandbox/index.inc.php?questions
 -query questions tusemezane.or.ke/sandbox/index.inc.php?course
+
+// Wrking now

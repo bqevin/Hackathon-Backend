@@ -1,11 +1,13 @@
 <?php
 require_once 'include/rb.php';
 require_once 'include/Input.php';
+require_once 'include/db.php';
 
 header('Content-type: application/json');
 
-R::setup('mysql:host=localhost; dbname=tusemeza_sandbox','tusemeza_root','Wr4w@M^BLAT0');
+R::setup('mysql:host={$host}; dbname={$dbname}', '{$user}', '{$pass}');
 
+//Checking if user has filled course
 if(isset($_POST['course'])){
 	$course = R::dispense('course');
 	$coursecode = Input::get('course_code');
